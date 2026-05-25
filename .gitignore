@@ -46,3 +46,10 @@ Desktop.ini
 
 # Package manager local cache
 .upm/
+
+# Local secrets - never commit tokens or credentials
+.secrets/
+.env
+.env.*
+*.token
+*.secret
