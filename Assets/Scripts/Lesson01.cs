@@ -19,6 +19,10 @@ public class Lesson01 : MonoBehaviour
     public float rotateSpeed = 100f;
     private float runSpeed = 4f;
     private bool isRunning;
+    private Rigidbody rigidBody;
+    //展示出来调数值 后续正式场合我觉得应该不能暴露出去
+    [SerializeField]
+    private float jumpForce = 10f;
     // Start is called before the first frame update
     private void Awake()
     {
@@ -27,6 +31,7 @@ public class Lesson01 : MonoBehaviour
 
     private void Start()
     {
+        rigidBody = GetComponent<Rigidbody>();
         currentSpeed = WalkSpeed;
         runSpeed = WalkSpeed*2;
         Cursor.lockState = CursorLockMode.Locked;
@@ -48,6 +53,8 @@ public class Lesson01 : MonoBehaviour
         
         playerController.Player.Look.performed += OnLook;
         playerController.Player.Look.canceled += OnLook;
+        
+        playerController.Player.Interact.performed += OnJump;
     }
 
     private void OnLook(InputAction.CallbackContext ctx)
@@ -69,13 +76,29 @@ public class Lesson01 : MonoBehaviour
         
         playerController.Player.Look.performed -= OnLook;
         playerController.Player.Look.canceled -= OnLook;
+        
+        playerController.Player.Interact.performed -= OnJump;
     }
 
     // Update is called once per frame
    
     #region 新版输入系统
-    
-    
+
+    private void OnJump(InputAction.CallbackContext ctx)
+    {
+        if (ctx.performed)
+        {
+            /*
+             * Force 模式 没有效果
+             * Acceleration 模式 没有效果
+             * VelocityChange 能正常实现跳跃
+             * Impulse 能正常实现跳跃
+             * 为什么？
+             * 我与gpt的沟通过程 请前往 项目根目录下 GameDev_KnowledgeBase\物理系统\Unity_Rigidbody_ForceMode_学习记录.md
+             */
+            rigidBody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        }
+    }
     private void OnMove(InputAction.CallbackContext ctx)
     {
         moveInput = ctx.ReadValue<Vector2>();
@@ -101,13 +124,15 @@ public class Lesson01 : MonoBehaviour
     #endregion
     void Update()
     {
-        transform.Rotate(Vector3.up*sensitivity*lookInput.x*Time.deltaTime);
+        transform.Rotate(Vector3.up * (sensitivity * lookInput.x * Time.deltaTime));
         // mouseX += lookInput.x*sensitivity;
         mouseY -= lookInput.y*sensitivity*Time.deltaTime;
         mouseY = Mathf.Clamp(mouseY, -maxCla, maxCla);
         cameraTransform.transform.localRotation = Quaternion.Euler(mouseY, 0, 0);
         transform.Translate(new Vector3(moveInput.x,0,moveInput.y) * (currentSpeed * Time.deltaTime));
         transform.Rotate(Vector3.up * (rotateInput * rotateSpeed * Time.deltaTime));
+        
+        
         #region 旧版输入系统
         /*if (Input.GetKey(KeyCode.W))
         {

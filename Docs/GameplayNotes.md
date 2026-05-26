@@ -22,3 +22,11 @@
 - Rigidbody 跳跃：使用物理组件处理竖直方向速度或冲量。
 - Grounded 检测：限制跳跃触发条件，避免无限空中跳。
 - CharacterController：理解非 Rigidbody 角色控制器的常见项目写法。
+
+## Rigidbody 与 ForceMode
+
+- 一次性跳跃更适合使用 `ForceMode.Impulse` 或 `ForceMode.VelocityChange`，因为它们会在一次调用中产生明显速度变化。
+- `ForceMode.Force` 和 `ForceMode.Acceleration` 更适合持续施力，单次按钮触发通常效果很小。
+- `Force` 和 `Impulse` 会受到 Rigidbody mass 影响；`Acceleration` 和 `VelocityChange` 不受 mass 影响。
+- `AddForce` 的参数在不同 `ForceMode` 下含义不同，不是 Unity 自动把同一个力拆成多份。
+- Drag / Linear Damping 更像速度衰减，不是会把物体反向推回去的固定阻力。
