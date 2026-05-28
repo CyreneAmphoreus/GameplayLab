@@ -174,6 +174,7 @@ GitHub push 使用本地文件 `.secrets/github-token.txt` 中的 token。
 - 读取 `.secrets/github-token.txt`
 - 生成本次命令使用的 Authorization header
 - 使用 `git -c http.sslBackend=openssl -c http.extraHeader=... push`
+- GitHub 用户名或仓库 owner 必须以当前 `git remote -v` / `remote.origin.url` 为准，不要硬编码旧用户名
 
 禁止：
 - 在对话、文档、提交信息或终端输出中显示 token
